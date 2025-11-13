@@ -11,6 +11,7 @@ Cerințe
 6) Crearea stratului de control (Controller Layer)
 
 Structura proiectului
+```
 rest-api-framework/
 ├── include/
 │   ├── core/
@@ -41,3 +42,4 @@ rest-api-framework/
 └── docs/
     └── documentatie.tex
     ├── README.md
+```
