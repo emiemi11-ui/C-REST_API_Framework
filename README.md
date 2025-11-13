@@ -1,3 +1,4 @@
+```
 Cerințe
 1) Crearea structurii framework-ului
 2) Implementarea unui server REST
@@ -9,9 +10,9 @@ Cerințe
     -Maparea rezultatelor în obiecte C++.
 5) Implementarea stratului de servicii (Service Layer)
 6) Crearea stratului de control (Controller Layer)
-
-Structura proiectului
 ```
+```
+Structura proiectului
 rest-api-framework/
 ├── include/
 │   ├── core/
