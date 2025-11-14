@@ -1,19 +1,18 @@
 #pragma once
-#include <iostream>
-#include <thread>
-#include <vector>
-#include <netinet/in.h> //pentru socketuri
-#include <unistd.h>
-#include "utils.hpp"
+#include <string>
+#include <netinet/in.h>
+#include "thread_pool.hpp"
 
 class Server {
 private:
     int port;
-    int server_fd; //file descriptorul
-    std::vector<std::thread> workers; //un vector de threaduri (fiecare client are propriul thread)
+    int server_fd;
+    ThreadPool pool;   // adăugăm pool de thread-uri
 
 public:
-    Server(int port);
+    Server(int port, size_t threadCount = 8);
     void start();
+
+private:
     void handleClient(int client_socket);
 };

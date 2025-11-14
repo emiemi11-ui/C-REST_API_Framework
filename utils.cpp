@@ -1,7 +1,10 @@
 #include "utils.hpp"
+#include "semaphore.hpp"
 #include <iostream>
 #include <string>
 #include <ctime>
+
+static Semaphore logSem("logSem", 1, true);
 
 std::string utils::timestamp() {
     time_t now = time(0);
@@ -11,5 +14,7 @@ std::string utils::timestamp() {
 }
 
 void utils::log(const std::string &msg) {
+    logSem.wait();
     std::cout << "[" << timestamp() << "] " << msg << std::endl;
+    logSem.post();
 }
