@@ -1,24 +1,25 @@
 #pragma once
-#include <vector>
-#include <thread>
+#include <pthread.h>
 #include <queue>
-#include <mutex>
-#include <condition_variable>
 #include <functional>
-#include <atomic>
 
 class ThreadPool {
 private:
-    std::vector<std::thread> workers;
-    std::queue<std::function<void()>> tasks;
+    pthread_t* workers;
+    size_t thread_count;
 
-    std::mutex queue_mutex;
-    std::condition_variable condition;
-    std::atomic<bool> stop;
+    std::queue<std::function<void()>> tasks; //retin cererile
+
+    pthread_mutex_t queue_mutex; //pt sincronizarea accesului la coada de cereri
+    pthread_cond_t condition;
+
+    int stop;
+
+    static void* worker_thread(void* arg);
 
 public:
     explicit ThreadPool(size_t threads = 4);
     ~ThreadPool();
 
-    void enqueue(std::function<void()> task);
+    void enqueue(std::function<void()> task); //folosita pt a adauga o sarcina in coada
 };

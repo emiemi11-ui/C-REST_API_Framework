@@ -1,16 +1,14 @@
 #pragma once
 #include <semaphore.h>
-#include <string>
-#include <stdexcept>
 
 class Semaphore {
 private:
     sem_t* sem;
-    std::string name;
-    bool owner;
+    const char* name;
+    int isCreator;
 
 public:
-    Semaphore(const std::string& semName, unsigned int initialValue = 1, bool create = false);
+    Semaphore(const char* semName, unsigned int initialValue, int create);
     ~Semaphore();
 
     void wait();
