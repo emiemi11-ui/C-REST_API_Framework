@@ -1,7 +1,7 @@
 #include "service.hpp"
 #include <sstream>
 
-Service::Service(const std::string& dbFile) {
+Service::Service(const std::string& dbFile): respo(dbFile) {
 }
 
 std::string Service::handleGetUsers() {

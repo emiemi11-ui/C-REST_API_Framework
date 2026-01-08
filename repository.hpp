@@ -7,7 +7,7 @@ class Repository {
 private:
     Database db;
 public:
-    Repository();
+    explicit Repository(const std::string& dbFile);
     std::vector<std::string> getUsers();
     void addUser(const std::string& name);
     int deleteUserByName(const std::string& name);
