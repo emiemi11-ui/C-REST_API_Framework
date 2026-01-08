@@ -72,7 +72,8 @@ int Database::deleteUserByName(const std::string& name) {
 }
 
 
-int Database::updateUserByName(const std::string& oldName, const std::string& newName) {
+int Database::updateUserByName(const std::string& oldName, const std::string& newName) 
+{
     pthread_mutex_lock(&db_mutex);
 
     int before = sqlite3_total_changes(db);

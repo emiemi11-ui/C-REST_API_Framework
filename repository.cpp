@@ -4,7 +4,8 @@ Repository::Repository(const std::string& dbFile)
     : db(dbFile) {
 }
 
-std::vector<std::string> Repository::getUsers() {
+std::vector<std::string> Repository::getUsers() 
+{
     return db.getAllUsers();
 }
 

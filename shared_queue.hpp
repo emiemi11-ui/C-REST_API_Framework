@@ -36,7 +36,6 @@ private:
     Semaphore* resp_full;
 
     Semaphore* semBin;
-
 public:
     SharedQueue(key_t key, bool create = false);
     ~SharedQueue();

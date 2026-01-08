@@ -6,6 +6,7 @@
 class Repository {
 private:
     Database db;
+    
 public:
     explicit Repository(const std::string& dbFile);
     std::vector<std::string> getUsers();

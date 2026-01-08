@@ -42,8 +42,7 @@ SharedQueue::SharedQueue(key_t key, bool create)
     }
 }
 
-SharedQueue::~SharedQueue()
-{
+SharedQueue::~SharedQueue(){
     munmap(data, sizeof(SharedData));
     close(shmid);
 
