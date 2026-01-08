@@ -10,4 +10,6 @@ public:
     Repository();
     std::vector<std::string> getUsers();
     void addUser(const std::string& name);
+    int deleteUserByName(const std::string& name);
+    int updateUserByName(const std::string& oldName, const std::string& newName);
 };

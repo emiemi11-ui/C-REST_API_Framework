@@ -7,12 +7,9 @@ class Server {
 private:
     int port;
     int server_fd;
-    ThreadPool pool;   // adăugăm pool de thread-uri
+    ThreadPool pool;
 
 public:
     Server(int port, size_t threadCount = 8);
     void start();
-
-private:
-    void handleClient(int client_socket);
 };
