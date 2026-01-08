@@ -6,6 +6,7 @@ class Service {
 private:
     Repository respo;
 public:
+
     explicit Service(const std::string& dbFile);
     std::string handleGetUsers();
     std::string handleAddUser(const std::string& name);

@@ -21,17 +21,17 @@ std::vector<std::string> Database::getAllUsers() {
 
     std::vector<std::string> users;
     const char* sql = "SELECT name FROM users;";
-    sqlite3_stmt* stmt;
+    sqlite3_stmt* stmt; //retine interogarea
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
-        while (sqlite3_step(stmt) == SQLITE_ROW) {
-            users.push_back(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)));
+        while (sqlite3_step(stmt) == SQLITE_ROW) { //parcurge rezultatatele interogarii
+            users.push_back(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0))); //extrag coloana 0
         }
     } else {
         std::cerr << "Query failed: " << sqlite3_errmsg(db) << std::endl;
     }
 
-    sqlite3_finalize(stmt);
+    sqlite3_finalize(stmt); //elibereaza resursele
 
     pthread_mutex_unlock(&db_mutex);
 
@@ -54,10 +54,9 @@ void Database::addUser(const std::string& name) {
 int Database::deleteUserByName(const std::string& name) {
     pthread_mutex_lock(&db_mutex);
 
-    int before = sqlite3_total_changes(db);
+    int before = sqlite3_total_changes(db); //numarul de modificari de la ultima conexiune
 
-    std::string sql =
-        "DELETE FROM users WHERE name='" + name + "';";
+    std::string sql = "DELETE FROM users WHERE name='" + name + "';";
 
     char* errMsg = nullptr;
     if (sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errMsg) != SQLITE_OK) {
@@ -73,15 +72,13 @@ int Database::deleteUserByName(const std::string& name) {
 }
 
 
-int Database::updateUserByName(const std::string& oldName,
-                                const std::string& newName) {
+int Database::updateUserByName(const std::string& oldName, const std::string& newName) 
+{
     pthread_mutex_lock(&db_mutex);
 
     int before = sqlite3_total_changes(db);
 
-    std::string sql =
-        "UPDATE users SET name='" + newName +
-        "' WHERE name='" + oldName + "';";
+    std::string sql = "UPDATE users SET name='" + newName + "' WHERE name='" + oldName + "';";
 
     char* errMsg = nullptr;
     if (sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errMsg) != SQLITE_OK) {

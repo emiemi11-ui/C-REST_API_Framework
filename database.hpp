@@ -7,7 +7,8 @@
 class Database {
 private:
     sqlite3* db;
-    pthread_mutex_t db_mutex; //acces la baza de date
+    pthread_mutex_t db_mutex; //pt accesul la baza de date
+    
 public:
     Database(const std::string& dbFile);
     ~Database();

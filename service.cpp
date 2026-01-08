@@ -1,7 +1,7 @@
 #include "service.hpp"
 #include <sstream>
 
-Service::Service(const std::string& dbFile) {
+Service::Service(const std::string& dbFile): respo(dbFile) {
 }
 
 std::string Service::handleGetUsers() {
@@ -36,8 +36,7 @@ std::string Service::handleDeleteUserByName(const std::string& name) {
     return "{\"status\":\"User deleted\",\"name\":\"" + name + "\"}";
 }
 
-std::string Service::handleUpdateUserByName(const std::string& oldName,
-                                            const std::string& newName) {
+std::string Service::handleUpdateUserByName(const std::string& oldName, const std::string& newName) {
     int updated = respo.updateUserByName(oldName, newName);
 
     if (updated == 0) {

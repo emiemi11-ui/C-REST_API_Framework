@@ -29,7 +29,7 @@ void Server::start()
     address.sin_addr.s_addr = INADDR_ANY; //ca sa asculte pe toate adresele
     address.sin_port = htons(port);
 
-    if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
+    if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) { //leg socketul de port
         perror("bind failed");
         close(server_fd);
         return;
@@ -59,7 +59,7 @@ void Server::start()
         if (client_socket < 0) 
             continue;
 
-        pool.enqueue([client_socket]() { //pun cererea in coada in ThreadPool si execut codul in thread
+        pool.enqueue([client_socket]() { //pun cererea in coada, execut codul in thread
         //citesc cererea
         char buffer[1024] = {0};
         read(client_socket, buffer, sizeof(buffer));
@@ -69,7 +69,7 @@ void Server::start()
 
         SharedQueue queue(SHM_KEY, false);
 
-        Task task;
+        Task task; //din mem partajata
         strncpy(task.request, request.c_str(), MAX_MSG_SIZE);
         queue.push_request(task); //pun cererea in coada de asteptare
 
@@ -83,7 +83,7 @@ void Server::start()
     });
     }
 
-    while (wait(nullptr) > 0);
+    while (wait(nullptr) > 0); //astept
 }
 
 
