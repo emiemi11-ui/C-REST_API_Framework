@@ -4,7 +4,7 @@
 #include <string>
 #include <ctime>
 
-static Semaphore logSem("logSem", 1, true);
+static Semaphore logSem("logSem", 1, true); //controleaza accesul la consola
 
 std::string utils::timestamp() {
     time_t now = time(0);

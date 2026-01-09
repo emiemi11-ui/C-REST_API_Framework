@@ -4,33 +4,39 @@
 #include "utils.hpp"
 #include <unistd.h>
 #include <iostream>
+#include <sys/socket.h>
+#include <cstring>
 
 #define SHM_KEY 1234
 
-// 🔹 Funcția care procesează o cerere din coadă (Controller → Service → Repository → Database)
-void processRequest(const std::string& msg) {
-    Controller controller;                          // creează un Controller
-    std::string response = controller.handleRequest(msg); // procesează cererea HTTP
-    utils::log("[Thread] Response: " + response);   // afișează rezultatul
+Controller controller("data.db");
+
+//proceseaza cererea primita
+void processRequest(const Task& task, SharedQueue& queue) 
+{
+    std::string request(task.request);
+    std::string response = controller.handleRequest(request);
+    queue.push_response(response);
+
+    utils::log("[Worker] Response pushed to server");
 }
 
-// 🔹 Punctul de intrare al procesului Worker
-int main() {
-    SharedQueue queue(SHM_KEY);     // atașare la memoria partajată
-    ThreadPool pool(10);            // 10 thread-uri în fiecare Worker
+int main() 
+{
+    SharedQueue queue(SHM_KEY);
+    ThreadPool pool(10);
 
     utils::log("[Worker] Process started (PID: " + std::to_string(getpid()) + ")");
 
     while (true) {
-        // Worker-ul citește o cerere din coada comună
-        std::string msg = queue.pop();
+        Task task = queue.pop_request(); //extrage cererea din coada partajata
         utils::log("[Worker] Received new task from Master");
 
-        // Fiecare cerere este trimisă la un thread din pool pentru procesare
-        pool.enqueue([msg]() {
-            processRequest(msg);
+        pool.enqueue([task, &queue]() { //acum thredul o proceseaza
+            processRequest(task, queue);
         });
     }
+
 
     return 0;
 }
