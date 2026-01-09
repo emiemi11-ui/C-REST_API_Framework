@@ -1,62 +1,49 @@
 #pragma once
-#include "semaphore.hpp"
-#include "shared_memory.hpp"
+#include <sys/ipc.h>
+#include <sys/shm.h>
 #include <string>
-#include <cstring>
+#include "semaphore.hpp"
 
 #define MAX_QUEUE_SIZE 10
 #define MAX_MSG_SIZE 1024
 
+struct Task {
+    char request[MAX_MSG_SIZE];
+};
+
 struct SharedData {
-    char messages[MAX_QUEUE_SIZE][MAX_MSG_SIZE];
-    int front;
-    int rear;
-    int count;
+    char req_messages[MAX_QUEUE_SIZE][MAX_MSG_SIZE];
+    int req_front;
+    int req_rear;
+    int req_count;
+
+    char resp_messages[MAX_QUEUE_SIZE][MAX_MSG_SIZE];
+    int resp_front;
+    int resp_rear;
+    int resp_count;
 };
 
 class SharedQueue {
 private:
-    SharedMemory<SharedData> shm;
-    Semaphore emptySlots, fullSlots, mutex;
+    bool isCreator;
+    int shmid;
+    SharedData* data;
 
+    Semaphore* req_empty;
+    Semaphore* req_full;
+
+    Semaphore* resp_empty;
+    Semaphore* resp_full;
+
+    Semaphore* semBin;
 public:
-    SharedQueue(key_t key, bool create=false)
-    : shm(key, create),
-      emptySlots("emptySlots", MAX_QUEUE_SIZE, create),
-      fullSlots("fullSlots", 0, create),
-      mutex("mutex", 1, create)
-{
-    if (create) {
-        SharedData* d = shm.get();
-        d->front = d->rear = d->count = 0;
-    }
-}
+    SharedQueue(key_t key, bool create = false);
+    ~SharedQueue();
 
-    void push(const std::string& msg) {
-        emptySlots.wait();
-        mutex.wait();
+    void push_request(const Task& task);
+    Task pop_request();
 
-        SharedData* d = shm.get();
-        strncpy(d->messages[d->rear], msg.c_str(), MAX_MSG_SIZE);
-        d->rear = (d->rear + 1) % MAX_QUEUE_SIZE;
-        d->count++;
-
-        mutex.post();
-        fullSlots.post();
-    }
-
-    std::string pop() {
-        fullSlots.wait();
-        mutex.wait();
-
-        SharedData* d = shm.get();
-        std::string msg(d->messages[d->front]);
-        d->front = (d->front + 1) % MAX_QUEUE_SIZE;
-        d->count--;
-
-        mutex.post();
-        emptySlots.post();
-
-        return msg;
-    }
+    void push_response(const std::string& response);
+    std::string pop_response();
 };
+
