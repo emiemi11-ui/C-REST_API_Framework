@@ -1,4 +1,7 @@
 ```
+Proiectul-principal este PSOP2.zip ;deziarhivati si rulati in LinuxMint
+
+
 Cerințe
 1) Crearea structurii framework-ului
 2) Implementarea unui server REST
